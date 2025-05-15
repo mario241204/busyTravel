@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BusyTravel - Buscar Vuelos y Hoteles</title>
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />
+    <style>
+        /* ... (igual que antes, omitido para brevedad, incluye el fondo que te gusta) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 20px 40px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        main {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #34495e;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        label {
+            font-weight: 600;
+            color: #34495e;
+        }
+        input[type="text"],
+        input[type="number"],
+        select {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #bbb;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #4ca2cd;
+            box-shadow: 0 0 8px #4ca2cd;
+        }
+        button {
+            background-color: #4ca2cd;
+            color: white;
+            padding: 15px;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #3a89c9;
+        }
+        footer {
+            margin-top: 60px;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        @media (max-width: 640px) {
+            main {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>BusyTravel</header>
+<main>
+    <h2>Encuentra vuelos y hoteles</h2>
+    <form id="searchForm">
+        <label for="tripType">Tipo de búsqueda</label>
+        <select id="tripType" name="tripType">
+            <option value="vuelo">Vuelos</option>
+            <option value="hotel">Hoteles</option>
+        </select>
+
+        <div id="flightFields">
+            <label for="origin">Origen</label>
+            <input type="text" id="origin" name="origin" placeholder="Ciudad o aeropuerto" />
+
+            <label for="destination">Destino</label>
+            <input type="text" id="destination" name="destination" placeholder="Ciudad o aeropuerto" />
+        </div>
+
+        <div id="hotelField" style="display:none;">
+            <label for="hotelCity">Ciudad</label>
+            <select id="hotelCity" name="hotelCity">
+                <option value="">Selecciona una ciudad</option>
+                <option value="madrid">Madrid</option>
+                <option value="barcelona">Barcelona</option>
+                <option value="valencia">Valencia</option>
+                <option value="sevilla">Sevilla</option>
+                <option value="granada">Granada</option>
+            </select>
+        </div>
+
+        <label for="dateRange">Fechas</label>
+        <input type="text" id="dateRange" name="dateRange" placeholder="Selecciona fechas" readonly />
+
+        <label for="passengers">Número de pasajeros</label>
+        <input type="number" id="passengers" name="passengers" value="2" min="1" />
+
+        <button type="submit">Buscar</button>
+    </form>
+</main>
+<footer>&copy; 2025 BusyTravel</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    const tripType = document.getElementById('tripType');
+    const flightFields = document.getElementById('flightFields');
+    const hotelField = document.getElementById('hotelField');
+    const searchForm = document.getElementById('searchForm');
+
+    function updateForm() {
+        if (tripType.value === 'hotel') {
+            flightFields.style.display = 'none';
+            hotelField.style.display = 'block';
+        } else {
+            flightFields.style.display = 'block';
+            hotelField.style.display = 'none';
+        }
+    }
+
+    tripType.addEventListener('change', updateForm);
+    window.addEventListener('load', updateForm);
+
+    flatpickr("#dateRange", {
+        mode: "range",
+        minDate: "today",
+        dateFormat: "Y-m-d",
+        locale: {
+            firstDayOfWeek: 1,
+            weekdays: {
+                shorthand: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+                longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            },
+            months: {
+                shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            },
+        },
+    });
+
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const type = tripType.value;
+        const passengers = document.getElementById('passengers').value || 1;
+        const dates = document.getElementById('dateRange').value.split(" to ");
+        const startDate = dates[0] || "";
+        const endDate = dates[1] || "";
+
+        if(type === "vuelo") {
+            const origin = document.getElementById('origin').value.trim();
+            const destination = document.getElementById('destination').value.trim();
+
+            if(!origin || !destination) {
+                alert("Por favor, completa origen y destino.");
+                return;
+            }
+            // Redirigir a búsqueda de vuelos en Skyscanner (ejemplo)
+            // Formato simple: https://www.skyscanner.es/transport/flights/ORIG/DEST/STARTDATE/ENDDATE/
+            // La fecha es YYYY-MM-DD, si no hay regreso solo ponemos salida
+            let url = `https://www.skyscanner.es/transport/flights/${encodeURIComponent(origin)}/${encodeURIComponent(destination)}/${startDate}/`;
+            if(endDate) url += `${endDate}/`;
+            window.open(url, '_blank');
+
+        } else {
+            const city = document.getElementById('hotelCity').value;
+            if(!city) {
+                alert("Por favor, selecciona una ciudad.");
+                return;
+            }
+            // Redirigir a búsqueda de hoteles en Booking
+            // Ejemplo con Booking: https://www.booking.com/searchresults.html?ss=ciudad&checkin=YYYY-MM-DD&checkout=YYYY-MM-DD&group_adults=numero
+            let url = `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(city)}&checkin_year_month_monthday=${startDate}&checkout_year_month_monthday=${endDate}&group_adults=${passengers}`;
+            window.open(url, '_blank');
+        }
+    });
+</script>
+</body>
+</html>
+
+
